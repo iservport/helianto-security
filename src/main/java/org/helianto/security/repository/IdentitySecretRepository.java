@@ -7,7 +7,6 @@ import org.helianto.core.domain.Identity;
 import org.helianto.security.domain.IdentitySecret;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 /**
  * Identity secret repository.

@@ -2,7 +2,8 @@ package org.helianto.security.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
+import javax.inject.Inject;
 
 import org.helianto.security.domain.IdentitySecret;
 import org.helianto.security.repository.IdentitySecretRepository;
@@ -12,7 +13,6 @@ import org.helianto.user.repository.UserGroupRepository;
 import org.helianto.user.repository.UserReadAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,13 +28,13 @@ public class AbstractDetailsService {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractDetailsService.class);
     
-	@Autowired
+	@Inject
     protected IdentitySecretRepository identitySecretRepository;
     
-	@Autowired
+	@Inject
     protected UserGroupRepository userGroupRepository;
     
-	@Autowired
+	@Inject
     protected UserAuthorityRepository userAuthorityRepository;
     
 	/**
@@ -46,15 +46,16 @@ public class AbstractDetailsService {
 	 * @throws DataAccessException
 	 */
 	@Transactional
-	protected IdentitySecret loadIdentitySecurityByKey(String identityKey) throws UsernameNotFoundException, DataAccessException {
+	protected IdentitySecret loadIdentitySecretByKey(String identityKey) throws UsernameNotFoundException, DataAccessException {
 
 		IdentitySecret identitySecret = identitySecretRepository.findByIdentityKey(identityKey);
 
-		if (identitySecret==null) {
-			logger.info("Unable to load by user name with {}.", identityKey);
-			throw new UsernameNotFoundException("Unable to find user name for "+identityKey);
+		if (identitySecret!=null) {
+			return identitySecret;
 		}
-		return identitySecret;
+		
+		logger.error("Unable to load by user name with {}.", identityKey);
+		throw new UsernameNotFoundException("Unable to find user name for "+identityKey);
 		
 	}
 	
@@ -65,13 +66,14 @@ public class AbstractDetailsService {
 	 */
 	protected List<UserReadAdapter> loadUserListByIdentityId(int identityId) {
 		List<UserReadAdapter> userList = userGroupRepository.findByIdentityIdOrderByLastEventDesc(identityId);
-		logger.debug("Found {} user(s) matching id={}.", userList.size(), identityId);
 		
-		if (userList==null || userList.size()==0) {
-			throw new UsernameNotFoundException("Unable to find any user for identity id "+identityId);
+		if (userList!=null && userList.size()>0) {
+			logger.debug("Found {} user(s) matching id={}.", userList.size(), identityId);
+			return userList;
 		}
-		
-		return userList;
+
+		logger.error("Unable to load by user list");
+		throw new UsernameNotFoundException("Unable to find any user for identity id "+identityId);
 	}
 	
 	/**
@@ -81,7 +83,7 @@ public class AbstractDetailsService {
 	 */
 	protected List<GrantedAuthority> getAuthorities(UserReadAdapter userReadAdapter) {
 		List<UserAuthorityReadAdapter> adapterList = userAuthorityRepository.findByUserGroupIdOrderByServiceCodeAsc(userReadAdapter.getUserId());
-        Set<String> roleNames = UserAuthorityReadAdapter.getRoleNames(adapterList, userReadAdapter.getIdentityId());
+        List<String> roleNames = UserAuthorityReadAdapter.getRoleNames(adapterList, userReadAdapter.getIdentityId());
         
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (String roleName: roleNames) {

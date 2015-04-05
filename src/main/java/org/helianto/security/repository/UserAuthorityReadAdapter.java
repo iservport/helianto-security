@@ -1,7 +1,8 @@
 package org.helianto.security.repository;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -72,8 +73,8 @@ public class UserAuthorityReadAdapter implements Serializable {
      * @param userRole
      * @param identityId
      */
-	public static Set<String> getRoleNames(List<UserAuthorityReadAdapter> adapterList, Integer identityId) {
-        Set<String> roleNames = new HashSet<>();
+	public static List<String> getRoleNames(List<UserAuthorityReadAdapter> adapterList, Integer identityId) {
+        List<String> roleNames = new ArrayList<>();
 		for (UserAuthorityReadAdapter userAuthorityReadAdapter: adapterList) {
 			roleNames.addAll(getUserAuthoritiesAsString(
 					userAuthorityReadAdapter.getServiceCode()
@@ -83,16 +84,6 @@ public class UserAuthorityReadAdapter implements Serializable {
 		return roleNames;
 	}
 
-//    public static Set<String> getRoleNames(Collection<UserAuthority> roles, int identityId) {
-//        Set<String> roleNames = new HashSet<String>();
-//        for (UserAuthority r : roles) {
-//        	if (r.getAuthorityState().equals(ActivityState.ACTIVE)) {
-//               roleNames.addAll(getUserAuthoritiesAsString(r.getServiceCode(), r.getServiceExtension(), identityId));
-//        	}
-//        }
-//        return roleNames;
-//    }
-    
     /**
      * Converts user roles to authorities, including "ROLE_SELF_ID_x", where
      * x is the authorized user identity primary key.
@@ -102,7 +93,7 @@ public class UserAuthorityReadAdapter implements Serializable {
      * @param identityId
      */
     public static Set<String> getUserAuthoritiesAsString(String serviceName, String serviceExtensions, int identityId) {
-        Set<String> roleNames = new HashSet<String>();
+        Set<String> roleNames = new LinkedHashSet<String>();
         if (identityId>0) {
             roleNames.add(formatRole("SELF", new StringBuilder("ID_").append(identityId).toString()));
         }
