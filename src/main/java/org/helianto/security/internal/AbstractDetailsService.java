@@ -12,7 +12,6 @@ import org.helianto.security.repository.UserAuthorityRepository;
 import org.helianto.user.domain.UserRole;
 import org.helianto.user.repository.UserGroupRepository;
 import org.helianto.user.repository.UserReadAdapter;
-import org.helianto.user.repository.UserRoleReadAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
