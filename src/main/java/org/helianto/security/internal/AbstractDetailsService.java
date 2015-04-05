@@ -1,7 +1,6 @@
 package org.helianto.security.internal;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -9,7 +8,6 @@ import org.helianto.security.domain.IdentitySecret;
 import org.helianto.security.repository.IdentitySecretRepository;
 import org.helianto.security.repository.UserAuthorityReadAdapter;
 import org.helianto.security.repository.UserAuthorityRepository;
-import org.helianto.user.domain.UserRole;
 import org.helianto.user.repository.UserGroupRepository;
 import org.helianto.user.repository.UserReadAdapter;
 import org.slf4j.Logger;
@@ -83,14 +81,9 @@ public class AbstractDetailsService {
 	 */
 	protected List<GrantedAuthority> getAuthorities(UserReadAdapter userReadAdapter) {
 		List<UserAuthorityReadAdapter> adapterList = userAuthorityRepository.findByUserGroupIdOrderByServiceCodeAsc(userReadAdapter.getUserId());
-		List<GrantedAuthority> authorities = new ArrayList<>();
-        Set<String> roleNames = new HashSet<>();
-		for (UserAuthorityReadAdapter userRoleReadAdapter: adapterList) {
-			roleNames.addAll(UserRole.getUserRolesAsString(
-					userRoleReadAdapter.getServiceCode()
-					, userRoleReadAdapter.getServiceExtension()
-					, userReadAdapter.getIdentityId()));
-		}
+        Set<String> roleNames = UserAuthorityReadAdapter.getRoleNames(adapterList, userReadAdapter.getIdentityId());
+        
+        List<GrantedAuthority> authorities = new ArrayList<>();
         for (String roleName: roleNames) {
             authorities.add(new SimpleGrantedAuthority(roleName));
             logger.info("Granted authority: {}.", roleName);

@@ -1,6 +1,9 @@
 package org.helianto.security.repository;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * User authority read adapter.
@@ -61,7 +64,71 @@ public class UserAuthorityReadAdapter implements Serializable {
 	public String getServiceExtension() {
 		return serviceExtension;
 	}
+	
+    /**
+     * Expands user authorities to user roles, including "ROLE_SELF_ID_x", where
+     * x is the authorized user identity primary key.
+     * 
+     * @param userRole
+     * @param identityId
+     */
+	public static Set<String> getRoleNames(List<UserAuthorityReadAdapter> adapterList, Integer identityId) {
+        Set<String> roleNames = new HashSet<>();
+		for (UserAuthorityReadAdapter userAuthorityReadAdapter: adapterList) {
+			roleNames.addAll(getUserAuthoritiesAsString(
+					userAuthorityReadAdapter.getServiceCode()
+					, userAuthorityReadAdapter.getServiceExtension()
+					, identityId));
+		}
+		return roleNames;
+	}
 
+//    public static Set<String> getRoleNames(Collection<UserAuthority> roles, int identityId) {
+//        Set<String> roleNames = new HashSet<String>();
+//        for (UserAuthority r : roles) {
+//        	if (r.getAuthorityState().equals(ActivityState.ACTIVE)) {
+//               roleNames.addAll(getUserAuthoritiesAsString(r.getServiceCode(), r.getServiceExtension(), identityId));
+//        	}
+//        }
+//        return roleNames;
+//    }
+    
+    /**
+     * Converts user roles to authorities, including "ROLE_SELF_ID_x", where
+     * x is the authorized user identity primary key.
+     * 
+     * @param serviceName
+     * @param serviceExtensions
+     * @param identityId
+     */
+    public static Set<String> getUserAuthoritiesAsString(String serviceName, String serviceExtensions, int identityId) {
+        Set<String> roleNames = new HashSet<String>();
+        if (identityId>0) {
+            roleNames.add(formatRole("SELF", new StringBuilder("ID_").append(identityId).toString()));
+        }
+        roleNames.add(formatRole(serviceName, null));
+
+        String[] extensions = serviceExtensions.split(",");
+        for (String extension: extensions) {
+        	roleNames.add(formatRole(serviceName, extension));
+        }
+        return roleNames;
+    }
+    
+    /**
+     * Internal role formatter.
+     * 
+     * @param serviceName
+     * @param extension
+     */
+    public static String formatRole(String serviceName, String extension) {
+        StringBuilder sb = new StringBuilder("ROLE_").append(serviceName.toUpperCase());
+        if (extension!=null && extension.length()>0) {
+        	sb.append("_").append(extension.trim());
+        }
+        return sb.toString();
+    }
+    
 	@Override
 	public int hashCode() {
 		final int prime = 31;
