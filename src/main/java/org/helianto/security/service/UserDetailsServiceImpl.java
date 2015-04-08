@@ -3,6 +3,8 @@ package org.helianto.security.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.helianto.security.domain.IdentitySecret;
 import org.helianto.security.internal.AbstractDetailsService;
 import org.helianto.security.internal.UserDetailsAdapter;
@@ -28,6 +30,9 @@ public class UserDetailsServiceImpl
 	extends AbstractDetailsService
 	implements UserDetailsService 
 {
+	
+	@Inject
+	private AuthorizationChecker authorizationChecker;
 
 	@Transactional
 	public UserDetails loadUserByUsername(String userKey) throws UsernameNotFoundException, DataAccessException {
@@ -47,9 +52,7 @@ public class UserDetailsServiceImpl
 			user = userGroupRepository.saveAndFlush(user);
 
 			// grant the roles
-			List<GrantedAuthority> authorities = getAuthorities(userReadAdapter);
-			userDetails.setAuthorities(authorities);
-			return userDetails;
+			return authorizationChecker.updateAuthorities(userDetails);
 		}
 		throw new IllegalArgumentException("Unable to extract valid user from a list.");
 	}

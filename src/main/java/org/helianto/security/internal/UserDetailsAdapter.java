@@ -58,7 +58,7 @@ public class UserDetailsAdapter
 	
 	private UserReadAdapter userReadAdapter;
 
-	private IdentitySecret identitySecurity;
+	private IdentitySecret identitySecret;
     
     private List<GrantedAuthority> authorities = new ArrayList<>();
 
@@ -73,12 +73,21 @@ public class UserDetailsAdapter
      * Constructor.
      * 
      * @param userReadAdapter
+     */
+    public UserDetailsAdapter(UserReadAdapter userReadAdapter) {
+        this();
+        this.userReadAdapter = userReadAdapter;
+    }
+    
+    /**
+     * Constructor.
+     * 
+     * @param userReadAdapter
      * @param identitySecurity
      */
     public UserDetailsAdapter(UserReadAdapter userReadAdapter, IdentitySecret identitySecurity) {
-        this();
-        this.userReadAdapter = userReadAdapter;
-        this.identitySecurity = identitySecurity;
+        this(userReadAdapter);
+        this.identitySecret = identitySecurity;
     }
     
     /**
@@ -109,16 +118,6 @@ public class UserDetailsAdapter
 		return userReadAdapter.getUserId();
 	}
     
-    /**
-     * Identity security id.
-     */
-    public int getIdentitySecurityId() {
-    	if (identitySecurity!=null) {
-    		return identitySecurity.getId();
-    	}
-		return 0;
-	}
-    
     public boolean isAccountNonExpired() {
     	return userReadAdapter.isAccountNonExpired();
     }
@@ -137,8 +136,8 @@ public class UserDetailsAdapter
     }
 
     public String getPassword() {
-    	if (identitySecurity!=null) {
-    		return identitySecurity.getIdentitySecret();
+    	if (identitySecret!=null) {
+    		return identitySecret.getIdentitySecret();
     	}
         return "";
      }

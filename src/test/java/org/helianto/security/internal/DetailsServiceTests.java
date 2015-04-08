@@ -1,6 +1,6 @@
 package org.helianto.security.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,14 +8,10 @@ import java.util.List;
 import org.easymock.EasyMock;
 import org.helianto.security.domain.IdentitySecret;
 import org.helianto.security.repository.IdentitySecretRepository;
-import org.helianto.security.repository.UserAuthorityReadAdapter;
-import org.helianto.security.repository.UserAuthorityRepository;
 import org.helianto.user.repository.UserGroupRepository;
 import org.helianto.user.repository.UserReadAdapter;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 /**
@@ -86,65 +82,6 @@ public class DetailsServiceTests {
 		assertSame(new ArrayList<>(), service.loadUserListByIdentityId(1234));
 	}
 	
-	/**
-	 * Step 3, authority list.
-	 */
-	@Test
-	public void getAuthorities() {
-		List<GrantedAuthority> authorityList = new ArrayList<>();
-		authorityList.add(new SimpleGrantedAuthority("ROLE_SELF_ID_123"));
-		authorityList.add(new SimpleGrantedAuthority("ROLE_SERVICE"));
-		authorityList.add(new SimpleGrantedAuthority("ROLE_SERVICE_READ"));
-		
-		List<UserAuthorityReadAdapter> adapterList = new ArrayList<>();
-		adapterList.add(new UserAuthorityReadAdapter(1, 2, "SERVICE", "READ"));
-		
-		@SuppressWarnings("serial")
-		UserReadAdapter userReadAdapter = new UserReadAdapter() {
-			public int  getIdentityId() {
-				return 123;
-			}
-			public int  getUserId() {
-				return 1234;
-			}
-		};
-		
-		EasyMock.expect(service.userAuthorityRepository.findByUserGroupIdOrderByServiceCodeAsc(1234)).andReturn(adapterList);
-		EasyMock.replay(service.userAuthorityRepository);
-
-		assertEquals(authorityList, service.getAuthorities(userReadAdapter));
-	}
-	
-	/**
-	 * Step 3, multiple extensions, authority list.
-	 */
-	@Test
-	public void getAuthoritiesMore() {
-		List<GrantedAuthority> authorityList = new ArrayList<>();
-		authorityList.add(new SimpleGrantedAuthority("ROLE_SELF_ID_123"));
-		authorityList.add(new SimpleGrantedAuthority("ROLE_SERVICE"));
-		authorityList.add(new SimpleGrantedAuthority("ROLE_SERVICE_READ"));
-		authorityList.add(new SimpleGrantedAuthority("ROLE_SERVICE_WRITE"));
-		
-		List<UserAuthorityReadAdapter> adapterList = new ArrayList<>();
-		adapterList.add(new UserAuthorityReadAdapter(1, 2, "SERVICE", "READ,WRITE"));
-		
-		@SuppressWarnings("serial")
-		UserReadAdapter userReadAdapter = new UserReadAdapter() {
-			public int  getIdentityId() {
-				return 123;
-			}
-			public int  getUserId() {
-				return 1234;
-			}
-		};
-		
-		EasyMock.expect(service.userAuthorityRepository.findByUserGroupIdOrderByServiceCodeAsc(1234)).andReturn(adapterList);
-		EasyMock.replay(service.userAuthorityRepository);
-
-		assertEquals(authorityList, service.getAuthorities(userReadAdapter));
-	}
-	
 	private DetailsService service;
 	
 	@Before
@@ -159,7 +96,6 @@ public class DetailsServiceTests {
 		public DetailsService() {
 		    identitySecretRepository = EasyMock.createMock(IdentitySecretRepository.class);
 		    userGroupRepository = EasyMock.createMock(UserGroupRepository.class);
-		    userAuthorityRepository = EasyMock.createMock(UserAuthorityRepository.class);
 		}
 	}
 

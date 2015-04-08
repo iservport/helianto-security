@@ -1,21 +1,16 @@
 package org.helianto.security.internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.helianto.security.domain.IdentitySecret;
 import org.helianto.security.repository.IdentitySecretRepository;
-import org.helianto.security.repository.UserAuthorityReadAdapter;
-import org.helianto.security.repository.UserAuthorityRepository;
 import org.helianto.user.repository.UserGroupRepository;
 import org.helianto.user.repository.UserReadAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,9 +28,6 @@ public class AbstractDetailsService {
     
 	@Inject
     protected UserGroupRepository userGroupRepository;
-    
-	@Inject
-    protected UserAuthorityRepository userAuthorityRepository;
     
 	/**
 	 * Step 1: retrieve the identity secret.
@@ -74,23 +66,6 @@ public class AbstractDetailsService {
 
 		logger.error("Unable to load by user list");
 		throw new UsernameNotFoundException("Unable to find any user for identity id "+identityId);
-	}
-	
-	/**
-	 * Step 3: list authorities for the given user.
-	 * 
-	 * @param userReadAdapter
-	 */
-	protected List<GrantedAuthority> getAuthorities(UserReadAdapter userReadAdapter) {
-		List<UserAuthorityReadAdapter> adapterList = userAuthorityRepository.findByUserGroupIdOrderByServiceCodeAsc(userReadAdapter.getUserId());
-        List<String> roleNames = UserAuthorityReadAdapter.getRoleNames(adapterList, userReadAdapter.getIdentityId());
-        
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (String roleName: roleNames) {
-            authorities.add(new SimpleGrantedAuthority(roleName));
-            logger.info("Granted authority: {}.", roleName);
-        }
-        return authorities;
 	}
 	
 }
