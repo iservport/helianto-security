@@ -9,10 +9,10 @@ import org.helianto.security.domain.IdentitySecret;
 import org.helianto.security.internal.AbstractDetailsService;
 import org.helianto.security.internal.UserDetailsAdapter;
 import org.helianto.user.domain.User;
+import org.helianto.user.domain.UserGroup;
 import org.helianto.user.repository.UserReadAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -50,9 +50,12 @@ public class UserDetailsServiceImpl
 			User user = (User) userGroupRepository.findOne(userReadAdapter.getUserId());
 			user.setLastEvent(new Date());
 			user = userGroupRepository.saveAndFlush(user);
+			
+			// list groups that will bring authorities
+			List<UserGroup> parentGroups = getParentGroups(userReadAdapter.getUserId());
 
 			// grant the roles
-			return authorizationChecker.updateAuthorities(userDetails);
+			return authorizationChecker.updateAuthorities(userDetails, parentGroups);
 		}
 		throw new IllegalArgumentException("Unable to extract valid user from a list.");
 	}

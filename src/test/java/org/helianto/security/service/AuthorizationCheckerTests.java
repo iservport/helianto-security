@@ -9,6 +9,7 @@ import org.easymock.EasyMock;
 import org.helianto.security.internal.UserDetailsAdapter;
 import org.helianto.security.repository.UserAuthorityReadAdapter;
 import org.helianto.security.repository.UserAuthorityRepository;
+import org.helianto.user.domain.UserGroup;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
@@ -43,10 +44,12 @@ public class AuthorizationCheckerTests {
 			}
 		};
 		
-		EasyMock.expect(service.userAuthorityRepository.findByUserGroupIdOrderByServiceCodeAsc(1234)).andReturn(adapterList);
+		List<UserGroup> parentGroups = new ArrayList<>();
+		
+		EasyMock.expect(service.userAuthorityRepository.findByUserGroupIdOrderByServiceCodeAsc(parentGroups)).andReturn(adapterList);
 		EasyMock.replay(service.userAuthorityRepository);
 
-		assertEquals(authorityList, service.updateAuthorities(userReadAdapter).getAuthorities());
+		assertEquals(authorityList, service.updateAuthorities(userReadAdapter, parentGroups).getAuthorities());
 	}
 	
 	/**
@@ -73,10 +76,12 @@ public class AuthorizationCheckerTests {
 			}
 		};
 		
-		EasyMock.expect(service.userAuthorityRepository.findByUserGroupIdOrderByServiceCodeAsc(1234)).andReturn(adapterList);
+		List<UserGroup> parentGroups = new ArrayList<>();
+		
+		EasyMock.expect(service.userAuthorityRepository.findByUserGroupIdOrderByServiceCodeAsc(parentGroups)).andReturn(adapterList);
 		EasyMock.replay(service.userAuthorityRepository);
 
-		assertEquals(authorityList, service.updateAuthorities(userReadAdapter).getAuthorities());
+		assertEquals(authorityList, service.updateAuthorities(userReadAdapter, parentGroups).getAuthorities());
 	}
 	
 	private DetailsService service;

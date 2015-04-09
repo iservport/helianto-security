@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.helianto.security.domain.IdentitySecret;
 import org.helianto.security.repository.IdentitySecretRepository;
+import org.helianto.user.domain.UserGroup;
 import org.helianto.user.repository.UserGroupRepository;
 import org.helianto.user.repository.UserReadAdapter;
 import org.slf4j.Logger;
@@ -66,6 +67,15 @@ public class AbstractDetailsService {
 
 		logger.error("Unable to load by user list");
 		throw new UsernameNotFoundException("Unable to find any user for identity id "+identityId);
+	}
+	
+	/**
+	 * Step 3: list parent groups.
+	 * 
+	 * @param userId
+	 */
+	public List<UserGroup> getParentGroups(int userId) {
+		return userGroupRepository.findParentsByChildId(userId);
 	}
 	
 }

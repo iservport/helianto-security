@@ -1,6 +1,7 @@
 package org.helianto.security.repository;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import org.helianto.core.def.ActivityState;
@@ -37,7 +38,7 @@ public interface UserAuthorityRepository extends JpaRepository<UserAuthority, Se
 	/**
 	 * List by userGroup.
 	 * 
-	 * @param userGroupId
+	 * @param parentGroups
 	 */
 	@Query("select new "
 			+ "org.helianto.security.repository.UserAuthorityReadAdapter"
@@ -47,9 +48,9 @@ public interface UserAuthorityRepository extends JpaRepository<UserAuthority, Se
 			+ ", userAuthority_.serviceExtension "
 			+ ") "
 			+ "from UserAuthority userAuthority_ "
-			+ "where userAuthority_.userGroup.id = ?1 "
+			+ "where userAuthority_.userGroup in ?1 "
 			+ "order by userAuthority_.serviceCode ASC ")
-	List<UserAuthorityReadAdapter> findByUserGroupIdOrderByServiceCodeAsc(int userGroupId);
+	List<UserAuthorityReadAdapter> findByUserGroupIdOrderByServiceCodeAsc(Collection<UserGroup> parentGroups);
 
 	/**
 	 * Page by userGroup.
