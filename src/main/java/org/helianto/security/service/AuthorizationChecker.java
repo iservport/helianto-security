@@ -60,4 +60,12 @@ public class AuthorizationChecker {
         return userDetailsAdapter;
 	}
 	
+	/**
+	 * Updates authorities for the given user.
+	 * 
+	 * @param userDetailsAdapter
+	 */
+	public UserDetailsAdapter updateAuthorities(UserDetailsAdapter userDetailsAdapter) {
+		return updateAuthorities(userDetailsAdapter, listParentGroups(userDetailsAdapter.getUserId()));
+	}
 }

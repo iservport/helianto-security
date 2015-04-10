@@ -43,19 +43,15 @@ public class UserDetailsServiceImpl
 		if (userAdapterList!=null && userAdapterList.size()>0) {
 			// first userId in the list is the last logged one
 			UserReadAdapter userReadAdapter = userAdapterList.get(0);
-			UserDetailsAdapter userDetails = new UserDetailsAdapter(
-					userReadAdapter, identitySecret);
+			UserDetailsAdapter userDetails = new UserDetailsAdapter(userReadAdapter, identitySecret);
 			
 			// update the last event date
 			User user = (User) userGroupRepository.findOne(userReadAdapter.getUserId());
 			user.setLastEvent(new Date());
 			user = userGroupRepository.saveAndFlush(user);
 			
-			// list groups that will bring authorities
-			List<UserGroup> parentGroups = authorizationChecker.listParentGroups(userReadAdapter.getUserId());
-
 			// grant the roles
-			return authorizationChecker.updateAuthorities(userDetails, parentGroups);
+			return authorizationChecker.updateAuthorities(userDetails);
 		}
 		throw new IllegalArgumentException("Unable to extract valid user from a list.");
 	}
