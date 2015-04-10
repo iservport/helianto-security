@@ -1,6 +1,7 @@
 package org.helianto.security.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.helianto.security.internal.UserDetailsAdapter;
 import org.helianto.security.repository.UserAuthorityReadAdapter;
 import org.helianto.security.repository.UserAuthorityRepository;
 import org.helianto.user.domain.UserGroup;
+import org.helianto.user.repository.UserGroupRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +22,20 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  * @author mauriciofernandesdecastro
  */
 public class AuthorizationCheckerTests {
+	
+	/**
+	 * UserGroup list.
+	 */
+	@Test
+	public void listParentGroups() {
+		List<UserGroup> parentList = new ArrayList<>();
+		
+		EasyMock.expect(service.userGroupRepository.findParentsByChildId(1234)).andReturn(parentList);
+		EasyMock.replay(service.userGroupRepository);
+
+		assertSame(parentList, service.listParentGroups(1234));
+	}
+
 
 	/**
 	 * Authority list.
@@ -97,6 +113,7 @@ public class AuthorizationCheckerTests {
 	private class DetailsService extends AuthorizationChecker {
 		public DetailsService() {
 		    userAuthorityRepository = EasyMock.createMock(UserAuthorityRepository.class);
+		    userGroupRepository = EasyMock.createMock(UserGroupRepository.class);
 		}
 	}
 

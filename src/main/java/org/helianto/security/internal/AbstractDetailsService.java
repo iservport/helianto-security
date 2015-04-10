@@ -69,13 +69,4 @@ public class AbstractDetailsService {
 		throw new UsernameNotFoundException("Unable to find any user for identity id "+identityId);
 	}
 	
-	/**
-	 * Step 3: list parent groups.
-	 * 
-	 * @param userId
-	 */
-	public List<UserGroup> getParentGroups(int userId) {
-		return userGroupRepository.findParentsByChildId(userId);
-	}
-	
 }

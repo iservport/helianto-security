@@ -52,7 +52,7 @@ public class UserDetailsServiceImpl
 			user = userGroupRepository.saveAndFlush(user);
 			
 			// list groups that will bring authorities
-			List<UserGroup> parentGroups = getParentGroups(userReadAdapter.getUserId());
+			List<UserGroup> parentGroups = authorizationChecker.listParentGroups(userReadAdapter.getUserId());
 
 			// grant the roles
 			return authorizationChecker.updateAuthorities(userDetails, parentGroups);

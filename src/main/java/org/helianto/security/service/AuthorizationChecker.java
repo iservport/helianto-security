@@ -9,6 +9,7 @@ import org.helianto.security.internal.UserDetailsAdapter;
 import org.helianto.security.repository.UserAuthorityReadAdapter;
 import org.helianto.security.repository.UserAuthorityRepository;
 import org.helianto.user.domain.UserGroup;
+import org.helianto.user.repository.UserGroupRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,6 +29,18 @@ public class AuthorizationChecker {
 	@Inject
     protected UserAuthorityRepository userAuthorityRepository;
     
+	@Inject
+    protected UserGroupRepository userGroupRepository;
+    
+	/**
+	 * List parent groups.
+	 * 
+	 * @param userId
+	 */
+	public List<UserGroup> listParentGroups(int userId) {
+		return userGroupRepository.findParentsByChildId(userId);
+	}
+	
 	/**
 	 * Updates authorities for the given user.
 	 * 
