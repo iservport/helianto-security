@@ -175,4 +175,28 @@
 		</dependency>
 	</dependencies>
 
+	<repositories>
+	
+	    <repository>
+	        <id>spring-milestones</id>
+	        <name>Spring Milestones</name>
+	        <url>http://repo.spring.io/milestone</url>
+	        <snapshots>
+	            <enabled>false</enabled>
+	        </snapshots>
+	    </repository>
+	    
+    	<repository>
+			<id>helianto-release</id>
+			<name>Helianto releases</name>
+			<url>http://s3-sa-east-1.amazonaws.com/maven.helianto.org/release</url>
+		</repository>
+		
+		<repository>
+			<id>helianto-snapshot</id>
+			<name>Helianto snapshots</name>
+			<url>http://s3-sa-east-1.amazonaws.com/maven.helianto.org/snapshot</url>
+		</repository>
+				
+	</repositories>
 </project>
