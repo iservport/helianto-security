@@ -3,6 +3,7 @@ package org.helianto.security.repository;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.helianto.core.def.ActivityState;
 import org.helianto.security.domain.UserAuthority;
@@ -65,6 +66,6 @@ public interface UserAuthorityRepository extends JpaRepository<UserAuthority, Se
 			+ "from UserAuthority userAuthority_ "
 			+ "where userAuthority_.userGroup.id = ?1 "
 			+ "order by userAuthority_.serviceCode ASC ")
-	List<UserAuthority> findByUserGroupId(Integer userGroupId);
+	Set<UserAuthority> findByUserGroupId(Integer userGroupId);
 	
 }
