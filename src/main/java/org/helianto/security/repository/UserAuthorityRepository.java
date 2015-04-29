@@ -61,4 +61,10 @@ public interface UserAuthorityRepository extends JpaRepository<UserAuthority, Se
 	 */
 	Page<UserAuthority> findByUserGroupIdAndAuthorityState(int userGroupId, ActivityState authorityState, Pageable page);
 	
+	@Query("select userAuthority_ "
+			+ "from UserAuthority userAuthority_ "
+			+ "where userAuthority_.userGroup.id = ?1 "
+			+ "order by userAuthority_.serviceCode ASC ")
+	List<UserAuthority> findByUserGroupId(Integer userGroupId);
+	
 }
