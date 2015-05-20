@@ -19,6 +19,7 @@ import javax.persistence.Version;
 
 import org.helianto.core.def.ActivityState;
 import org.helianto.core.domain.Identity;
+import org.helianto.core.domain.IdentityPasswordGenerator;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -95,6 +96,17 @@ public class IdentitySecret implements Serializable {
 		setIdentity(identity);
 	}
 
+    /**
+     * Generate a password.
+     * 
+     * @param generator
+     * @param plainPassword
+     */
+    public IdentitySecret generateEncryptedPassword(IdentityPasswordGenerator generator, String plainPassword) {
+    	setIdentitySecret(generator.generatePassword(plainPassword));
+    	return this;
+    }
+    
 	public int getId() {
 		return id;
 	}
