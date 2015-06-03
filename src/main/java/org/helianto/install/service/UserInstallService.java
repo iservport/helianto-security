@@ -9,9 +9,7 @@ import javax.inject.Inject;
 import org.helianto.core.domain.ContextGroup;
 import org.helianto.core.domain.Entity;
 import org.helianto.core.domain.Identity;
-import org.helianto.core.domain.Operator;
 import org.helianto.core.repository.ContextGroupRepository;
-import org.helianto.core.repository.EntityRepository;
 import org.helianto.core.repository.OperatorRepository;
 import org.helianto.user.domain.User;
 import org.helianto.user.domain.UserAssociation;
@@ -22,7 +20,6 @@ import org.helianto.user.repository.UserReadAdapter;
 import org.helianto.user.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 /**
@@ -98,14 +95,13 @@ public class UserInstallService {
 				// associar nos grupos tipo S (sistema) e A (all=todos)
 				logger.info("userGroup.getUserType() {}  ", userGroup.getUserType());
 
-				if (userGroup.getUserType()!=null && userGroup.getUserType()=='S') {	
-					logger.info("userAssociation S ");
+				if (userGroup.getUserType()!=null && userGroup.isSystemGroup()) {	
 					List<UserAssociation> adminUsers = userAssociationRepository.findByParent(userGroup, null);
 					if (adminUsers!=null && adminUsers.size()>0) {
 						// pelo menos um admin foi encontrado
 					}
 					else {
-						logger.info("User {} is now admin at {}.", user, userGroup.getEntity());
+						logger.info("ATENTION: a new user association was created between a SystemGroup {} and user {} ", userGroup, user);
 						association = userAssociationRepository.saveAndFlush(new UserAssociation(userGroup, user));
 					}
 				}
