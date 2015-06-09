@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.helianto.core.def.ContextGroupType;
 import org.helianto.core.domain.ContextGroup;
 import org.helianto.core.domain.Entity;
 import org.helianto.core.domain.Identity;
@@ -53,12 +54,42 @@ public class UserInstallService {
 	private UserAssociationRepository userAssociationRepository;
 
 	/**
+	 * Assegura que haja os grupos de contexto necessários cadastrados.
+	 * 
+	 * @param entity
+	 */
+	protected List<ContextGroup> installContextGroups(Entity entity) {
+		List<ContextGroup> contextGroups = new ArrayList<ContextGroup>();
+		for (String code : defaultGroupNames) {
+			ContextGroup contextGroup = contextGroupRepository.findByContextIdAndContextGroupCode(entity.getContextId(), code);
+			if (contextGroup==null) {
+				contextGroup = new ContextGroup(entity.getOperator(), code);
+				switch (code) {
+				case "ADMIN":
+					contextGroup.setContextGroupName("Administradores");
+					contextGroup.setContextGroupType(ContextGroupType.SYS);
+					contextGroup.setUserType('S');
+					break;		
+				case "USER":
+					contextGroup.setContextGroupName("Usuários");
+					contextGroup.setContextGroupType(ContextGroupType.SYS);
+					contextGroup.setUserType('A');
+					break;	
+				}
+				contextGroup = contextGroupRepository.saveAndFlush(contextGroup);
+			}
+			contextGroups.add(contextGroup);
+		}
+		return contextGroups;
+	}
+	
+	/**
 	 * Assegura que haja os grupos necessários cadastrados.
 	 * 
 	 * @param entity
 	 */
 	protected List<UserGroup> installUserGroups(Entity entity) {
-		List<ContextGroup> contextGroups = contextGroupRepository.findByContextName(entity.getOperator().getOperatorName(), defaultGroupNames);
+		List<ContextGroup> contextGroups = installContextGroups(entity);
 		List<UserGroup> userGroups = new ArrayList<>();
 		for (ContextGroup contextGroup: contextGroups) {
 			UserGroup userGroup = userGroupRepository.findByEntity_IdAndUserKey(entity.getId(), contextGroup.getContextGroupCode());
