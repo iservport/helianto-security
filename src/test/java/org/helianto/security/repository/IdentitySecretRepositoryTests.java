@@ -5,14 +5,17 @@ import java.io.Serializable;
 import org.helianto.core.domain.Identity;
 import org.helianto.core.repository.IdentityRepository;
 import org.helianto.core.test.AbstractJpaRepositoryIntegrationTest;
+import org.helianto.security.config.CryptoConfig;
 import org.helianto.security.domain.IdentitySecret;
 import org.helianto.security.repository.IdentitySecretRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 
 /**
  * 
  * @author mauriciofernandesdecastro
  */
+@ContextConfiguration(classes={CryptoConfig.class})
 public class IdentitySecretRepositoryTests 
 	extends AbstractJpaRepositoryIntegrationTest<IdentitySecret, IdentitySecretRepository> {
 
