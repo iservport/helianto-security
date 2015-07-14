@@ -3,15 +3,18 @@ package org.helianto.security.repository;
 import java.io.Serializable;
 
 import org.helianto.core.test.AbstractJpaRepositoryIntegrationTest;
+import org.helianto.security.config.CryptoConfig;
 import org.helianto.security.domain.UserAuthority;
 import org.helianto.user.domain.UserGroup;
 import org.helianto.user.repository.UserGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 
 /**
  * 
  * @author mauriciofernandesdecastro
  */
+@ContextConfiguration(classes={CryptoConfig.class})
 public class UserAuthorityRepositoryTests 
 	extends AbstractJpaRepositoryIntegrationTest<UserAuthority, UserAuthorityRepository> {
 
