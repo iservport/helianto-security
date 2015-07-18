@@ -109,7 +109,7 @@ public class UserInstallService {
 	 * 
 	 * @param identity
 	 */
-	public UserReadAdapter installUser(Entity entity, String principal) {
+	public User installUser(Entity entity, String principal) {
 		Identity identity = identityInstallService.installIdentity(principal).getIdentity();
 		List<UserGroup> userGroups = installUserGroups(entity);
 		User user = null;
