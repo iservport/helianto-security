@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.helianto.security.domain.IdentitySecret;
+import org.helianto.user.domain.User;
 import org.helianto.user.repository.UserReadAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,8 @@ public class UserDetailsAdapter
 	
 	private UserReadAdapter userReadAdapter;
 
+	private User user;
+
 	private IdentitySecret identitySecret;
     
     private List<GrantedAuthority> authorities = new ArrayList<>();
@@ -82,6 +85,16 @@ public class UserDetailsAdapter
     /**
      * Constructor.
      * 
+     * @param user
+     */
+    public UserDetailsAdapter(User user) {
+        this();
+        this.user = user;
+    }
+    
+    /**
+     * Constructor.
+     * 
      * @param userReadAdapter
      * @param identitySecurity
      */
@@ -94,6 +107,9 @@ public class UserDetailsAdapter
      * Context id.
      */
     public int getContextId() {
+    	if (user!=null) {
+    		return user.getContextId();
+    	}
 		return userReadAdapter.getContextId();
 	}
     
@@ -101,6 +117,9 @@ public class UserDetailsAdapter
      * Entity id.
      */
     public int getEntityId() {
+    	if (user!=null) {
+    		return user.getEntityId();
+    	}
 		return userReadAdapter.getEntityId();
 	}
     
@@ -108,6 +127,9 @@ public class UserDetailsAdapter
      * Identity id.
      */
     public int getIdentityId() {
+    	if (user!=null) {
+    		return user.getIdentityId();
+    	}
 		return userReadAdapter.getIdentityId();
 	}
     
@@ -115,14 +137,24 @@ public class UserDetailsAdapter
      * User id.
      */
     public int getUserId() {
+    	if (user!=null) {
+    		return user.getId();
+    	}
 		return userReadAdapter.getUserId();
 	}
     
     public boolean isAccountNonExpired() {
+    	if (user!=null) {
+    		return user.isAccountNonExpired();
+    	}
     	return userReadAdapter.isAccountNonExpired();
     }
 
     public boolean isAccountNonLocked() {
+    	// TODO review this
+    	if (user!=null) {
+    		return true;
+    	}
     	return userReadAdapter.isAccountNonLocked();
     }
     
@@ -143,6 +175,10 @@ public class UserDetailsAdapter
      }
 
     public String getUsername() {
+    	// !!! it is userKey for Helianto semantics...
+    	if (user!=null) {
+    		return user.getUserKey();
+    	}
         return userReadAdapter.getUserName();
     }
     
