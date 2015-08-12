@@ -21,7 +21,7 @@ import org.helianto.core.def.ActivityState;
 import org.helianto.core.domain.Identity;
 import org.helianto.core.domain.IdentityPasswordGenerator;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Identity secret.
@@ -47,7 +47,7 @@ public class IdentitySecret implements Serializable {
     @Version
     private int version;
     
-    @JsonBackReference 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="identityId", nullable=true)
     private Identity identity;
