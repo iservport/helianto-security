@@ -140,14 +140,20 @@ public class UserDetailsAdapter
     	if (user!=null) {
     		return user.getId();
     	}
-		return userReadAdapter.getUserId();
+    	if (userReadAdapter!=null) {
+    		return	userReadAdapter.getUserId();
+		}
+		return 0;
 	}
     
     public boolean isAccountNonExpired() {
     	if (user!=null) {
     		return user.isAccountNonExpired();
     	}
-    	return userReadAdapter.isAccountNonExpired();
+    	if(userReadAdapter!=null){
+    		return userReadAdapter.isAccountNonExpired();
+    	}
+    	return false;
     }
 
     public boolean isAccountNonLocked() {
@@ -155,7 +161,10 @@ public class UserDetailsAdapter
     	if (user!=null) {
     		return true;
     	}
-    	return userReadAdapter.isAccountNonLocked();
+    	if(userReadAdapter!=null){
+    		return userReadAdapter.isAccountNonLocked();
+    	}
+    	return false;
     }
     
     public boolean isCredentialsNonExpired() {
