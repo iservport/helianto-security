@@ -9,7 +9,6 @@ import org.helianto.security.domain.IdentitySecret;
 import org.helianto.security.internal.AbstractDetailsService;
 import org.helianto.security.internal.UserDetailsAdapter;
 import org.helianto.user.domain.User;
-import org.helianto.user.domain.UserGroup;
 import org.helianto.user.repository.UserReadAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
