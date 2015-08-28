@@ -110,7 +110,10 @@ public class UserDetailsAdapter
     	if (user!=null) {
     		return user.getContextId();
     	}
-		return userReadAdapter.getContextId();
+    	if(userReadAdapter!=null ){
+    		return userReadAdapter.getContextId();
+    	}
+		return 0;
 	}
     
     /**
@@ -130,7 +133,10 @@ public class UserDetailsAdapter
     	if (user!=null) {
     		return user.getIdentityId();
     	}
-		return userReadAdapter.getIdentityId();
+    	if(userReadAdapter!=null ){
+    		return userReadAdapter.getIdentityId();
+    	}
+    	return 0 ;
 	}
     
     /**
