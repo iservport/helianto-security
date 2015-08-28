@@ -168,7 +168,7 @@ public class UserDetailsAdapter
     }
 
     public String getPassword() {
-    	if (identitySecret!=null) {
+    	if (identitySecret!=null && identitySecret.getIdentitySecret()!=null) {
     		return identitySecret.getIdentitySecret();
     	}
         return "";
@@ -179,7 +179,10 @@ public class UserDetailsAdapter
     	if (user!=null) {
     		return user.getUserKey();
     	}
-        return userReadAdapter.getUserName();
+    	if(userReadAdapter!=null && userReadAdapter.getUserName()!=null){
+    		return userReadAdapter.getUserName();
+    	}
+        return "";
     }
     
     public List<GrantedAuthority> getAuthorities() {
