@@ -158,6 +158,7 @@ public class UserInstallService {
 			logger.info("Will install user for entity {} and principal {}.", entity.getAlias(), identity.getPrincipal());
 			user = new User(entity, identity);
 			user.setUserType('I');
+			user.setUserName(identity.getIdentityFirstName()+ " " + identity.getIdentityLastName());
 			user = userRepository.saveAndFlush(user);
 			logger.info("installed user for entity {} and principal {}.", entity.getAlias(), identity.getPrincipal());
 		}
