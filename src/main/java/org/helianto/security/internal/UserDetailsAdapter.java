@@ -110,7 +110,10 @@ public class UserDetailsAdapter
     	if (user!=null) {
     		return user.getContextId();
     	}
-		return userReadAdapter.getContextId();
+    	if(userReadAdapter!=null ){
+    		return userReadAdapter.getContextId();
+    	}
+		return 0;
 	}
     
     /**
@@ -130,7 +133,10 @@ public class UserDetailsAdapter
     	if (user!=null) {
     		return user.getIdentityId();
     	}
-		return userReadAdapter.getIdentityId();
+    	if(userReadAdapter!=null ){
+    		return userReadAdapter.getIdentityId();
+    	}
+    	return 0 ;
 	}
     
     /**
@@ -140,14 +146,20 @@ public class UserDetailsAdapter
     	if (user!=null) {
     		return user.getId();
     	}
-		return userReadAdapter.getUserId();
+    	if (userReadAdapter!=null) {
+    		return	userReadAdapter.getUserId();
+		}
+		return 0;
 	}
     
     public boolean isAccountNonExpired() {
     	if (user!=null) {
     		return user.isAccountNonExpired();
     	}
-    	return userReadAdapter.isAccountNonExpired();
+    	if(userReadAdapter!=null){
+    		return userReadAdapter.isAccountNonExpired();
+    	}
+    	return false;
     }
 
     public boolean isAccountNonLocked() {
@@ -155,7 +167,10 @@ public class UserDetailsAdapter
     	if (user!=null) {
     		return true;
     	}
-    	return userReadAdapter.isAccountNonLocked();
+    	if(userReadAdapter!=null){
+    		return userReadAdapter.isAccountNonLocked();
+    	}
+    	return false;
     }
     
     public boolean isCredentialsNonExpired() {
@@ -168,7 +183,7 @@ public class UserDetailsAdapter
     }
 
     public String getPassword() {
-    	if (identitySecret!=null) {
+    	if (identitySecret!=null && identitySecret.getIdentitySecret()!=null) {
     		return identitySecret.getIdentitySecret();
     	}
         return "";
@@ -179,7 +194,10 @@ public class UserDetailsAdapter
     	if (user!=null) {
     		return user.getUserKey();
     	}
-        return userReadAdapter.getUserName();
+    	if(userReadAdapter!=null && userReadAdapter.getUserName()!=null){
+    		return userReadAdapter.getUserName();
+    	}
+        return "";
     }
     
     public List<GrantedAuthority> getAuthorities() {
