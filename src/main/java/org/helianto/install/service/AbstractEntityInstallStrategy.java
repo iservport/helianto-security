@@ -115,6 +115,7 @@ public abstract class AbstractEntityInstallStrategy
 		String contextName = env.getProperty("helianto.defaultContextName", DEFAULT_CONTEXT_NAME);
 		String contextDataLocation = env.getProperty("helianto.defaultContextName", DEFAULT_CONTEXT_NAME);
 
+		System.err.println(">>>>>>>>>");
 		Operator context = contextRepository.findByOperatorName(contextName);
 		if (context==null) {
 			context = contextRepository.saveAndFlush(new Operator(contextName));
@@ -123,6 +124,7 @@ public abstract class AbstractEntityInstallStrategy
 			City city = installStatesAndCities(context, country);
 			runOnce(context, city);
 		}
+		System.err.println("<<<<<<<<<");
 	}
 	
 	/**
