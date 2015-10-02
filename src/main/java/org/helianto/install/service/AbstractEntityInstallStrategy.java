@@ -78,6 +78,8 @@ public abstract class AbstractEntityInstallStrategy
 	
     protected String contextDataPath;
     
+    private String contextName;
+    
 	@Inject
 	private Environment env;
 	
@@ -112,7 +114,7 @@ public abstract class AbstractEntityInstallStrategy
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		contextDataPath = env.getProperty("helianto.contextDataPath", DEFAULT_CONTEXT_DATA_PATH);
-		String contextName = env.getProperty("helianto.defaultContextName", DEFAULT_CONTEXT_NAME);
+		contextName = env.getProperty("helianto.defaultContextName", DEFAULT_CONTEXT_NAME);
 		String contextDataLocation = env.getProperty("helianto.defaultContextName", DEFAULT_CONTEXT_NAME);
 
 		System.err.println(">>>>>>>>>");
@@ -125,6 +127,13 @@ public abstract class AbstractEntityInstallStrategy
 			runOnce(context, city);
 		}
 		System.err.println("<<<<<<<<<");
+	}
+	
+	/**
+	 * Context name.
+	 */
+	public String getContextName() {
+		return contextName;
 	}
 	
 	/**
