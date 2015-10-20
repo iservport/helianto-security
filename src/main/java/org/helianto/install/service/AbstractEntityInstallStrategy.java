@@ -9,6 +9,7 @@ import org.helianto.core.domain.Country;
 import org.helianto.core.domain.Entity;
 import org.helianto.core.domain.Identity;
 import org.helianto.core.domain.Operator;
+import org.helianto.core.domain.Signup;
 import org.helianto.core.domain.State;
 import org.helianto.core.repository.CityRepository;
 import org.helianto.core.repository.CountryRepository;
@@ -252,12 +253,35 @@ public abstract class AbstractEntityInstallStrategy
 	 * @param alias
 	 * @param summary
 	 * @param type
+	 * @deprecated
 	 */
 	protected Entity createPrototype(String alias, String summary, char type) {
 		Entity entity = new Entity();
 		entity.setAlias(alias);
 		entity.setSummary(summary);
 		entity.setEntityType(type);
+		return entity;
+	}
+	
+	/**
+	 * Basic prototype creation.
+	 * 
+	 * @param newAlias
+	 * @param form
+	 */
+	protected Entity createPrototype(String newAlias, Signup form) {
+		City city = cityRepository.findOne(form.getCityId());
+		if (city==null) {
+			logger.error("Unable to create entity, city with id {} not found", form.getCityId());
+			throw new IllegalArgumentException("Unable to create entity");
+		}
+		Entity entity = new Entity();
+		entity.setCity(city);
+		entity.setAlias(newAlias);
+		entity.setSummary(form.getSummary());
+		entity.setEntityType(form.getEntityType());
+		entity.setExternalLogoUrl(form.getExternalLogoUrl());
+		entity.setEntityDomain(form.getDomain());
 		return entity;
 	}
 	
