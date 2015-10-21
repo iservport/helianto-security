@@ -286,17 +286,16 @@ public abstract class AbstractEntityInstallStrategy
 	}
 	
 	public Entity installEntity(Operator context, Entity prototype) {
-		String contextName = env.getProperty("iservport.defaultContextName", "DEFAULT");
 		if (context==null) {
 			throw new IllegalArgumentException("Unable to find context");
 		}
-		Entity entity = entityRepository.findByContextNameAndAlias(contextName, prototype.getAlias());
+		Entity entity = entityRepository.findByContextNameAndAlias(context.getOperatorName(), prototype.getAlias());
 		if (entity==null) {
-			logger.info("Will install entity for context {} and alias {}.", contextName, prototype.getAlias());
+			logger.info("Will install entity for context {} and alias {}.", context.getOperatorName(), prototype.getAlias());
 			entity = entityRepository.saveAndFlush(new Entity(context, prototype));
 		}
 		else {
-			logger.debug("Found existing entity for context {} and alias {}.", contextName, prototype.getAlias());
+			logger.debug("Found existing entity for context {} and alias {}.", context.getOperatorName(), prototype.getAlias());
 		}
 		return entity;
 	}
