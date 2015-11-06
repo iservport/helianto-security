@@ -8,6 +8,7 @@ import org.helianto.core.domain.City;
 import org.helianto.core.domain.Country;
 import org.helianto.core.domain.Entity;
 import org.helianto.core.domain.Identity;
+import org.helianto.core.domain.Lead;
 import org.helianto.core.domain.Operator;
 import org.helianto.core.domain.Signup;
 import org.helianto.core.domain.State;
@@ -15,6 +16,7 @@ import org.helianto.core.repository.CityRepository;
 import org.helianto.core.repository.CountryRepository;
 import org.helianto.core.repository.EntityRepository;
 import org.helianto.core.repository.IdentityRepository;
+import org.helianto.core.repository.LeadRepository;
 import org.helianto.core.repository.OperatorRepository;
 import org.helianto.core.repository.StateRepository;
 import org.helianto.user.domain.User;
@@ -59,6 +61,9 @@ public abstract class AbstractEntityInstallStrategy
 	@Inject
 	private IdentityRepository identityRepository;
 	
+	@Inject
+	private LeadRepository leadRepository;
+
 	@Inject
 	private IdentityCrypto identityCrypto; 
 	
@@ -300,4 +305,51 @@ public abstract class AbstractEntityInstallStrategy
 		return entity;
 	}
 	
+	/**
+	 * Create entities.
+	 * 
+	 * @param prototypes
+	 * @param identity
+	 */
+	public void createEntities(Operator context, List<Entity> prototypes, Identity identity) {
+		Entity entity = null;
+		for (Entity prototype: prototypes) {
+			entity = installEntity(context, prototype);
+			if(entity!=null){
+				createUser(entity, identity);
+			}
+		}
+	}
+	/**
+	 * Create new user.
+	 * 
+	 * @param entity
+	 * @param form
+	 * @param formBinding
+	 */
+	public User createUser(Entity entity, Identity identity) {
+		try {
+			String principal = identity.getPrincipal();
+			User user = userInstallService.installUser(entity,  principal);
+			removeLead(principal);
+			return user;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Remove temporary lead.
+	 * 
+	 * @param leadPrincipal
+	 */
+	public final String removeLead(String leadPrincipal){
+		List<Lead> leads = leadRepository.findByPrincipal(leadPrincipal);	
+		for (Lead lead : leads) {
+			leadRepository.delete(lead);
+		}
+		return leadPrincipal;
+	}
+
 }
