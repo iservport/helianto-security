@@ -73,6 +73,18 @@ public class UserAuthority implements Serializable {
 		setServiceCode(serviceCode);
 	}
 
+    /**
+     * Constructor.
+     * 
+     * @param userGroup
+     * @param serviceCode
+     * @param extensions
+     */
+    public UserAuthority(UserGroup userGroup, String serviceCode, String extensions) {
+    	this(userGroup, serviceCode);
+    	setServiceExtension(extensions);
+	}
+
 	public int getId() {
 		return id;
 	}
