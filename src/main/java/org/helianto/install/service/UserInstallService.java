@@ -54,7 +54,9 @@ public class UserInstallService {
 	private UserAssociationRepository userAssociationRepository;
 
 	/**
-	 * Assegura que haja os grupos de contexto necessários cadastrados.
+	 * Ensure system context groups are written.
+	 * 
+	 * Context groups will be used later as a model to create user groups for every new entity.
 	 * 
 	 * @param entity
 	 */
@@ -66,14 +68,14 @@ public class UserInstallService {
 				contextGroup = new ContextGroup(entity.getOperator(), code);
 				switch (code) {
 				case "ADMIN":
-					contextGroup.setContextGroupName("Administradores");
+					contextGroup.setContextGroupName("ADMIN");
 					contextGroup.setContextGroupType(ContextGroupType.SYS);
 					contextGroup.setUserType('S');
 					break;		
 				case "USER":
-					contextGroup.setContextGroupName("Usuários");
+					contextGroup.setContextGroupName("USER");
 					contextGroup.setContextGroupType(ContextGroupType.SYS);
-					contextGroup.setUserType('A');
+					contextGroup.setUserType('G');
 					break;	
 				}
 				contextGroup = contextGroupRepository.saveAndFlush(contextGroup);
@@ -84,7 +86,7 @@ public class UserInstallService {
 	}
 	
 	/**
-	 * Assegura que haja os grupos necessários cadastrados.
+	 * Ensure user groups are created according to context groups.
 	 * 
 	 * @param entity
 	 */
@@ -103,9 +105,9 @@ public class UserInstallService {
 	}
 	
 	/**
-	 * Assegura que haja usuários cadastrados e associados aos grupos de sistema.
+	 * Install users.
 	 * 
-	 * Caso seja o primeiro usuário, é cadastrado também nos grupos tipo S (sistema)
+	 * If user is the first one in the entity, she receives ADMIN privileges.
 	 * 
 	 * @param identity
 	 */
@@ -123,7 +125,6 @@ public class UserInstallService {
 			logger.info("userAssociation found  {} ", association);
 
 			if (association==null) {
-				// associar nos grupos tipo S (sistema) e A (all=todos)
 				logger.info("userGroup.getUserType() {}  ", userGroup.getUserType());
 
 				if (userGroup.getUserType()!=null && userGroup.isSystemGroup()) {	
@@ -147,7 +148,7 @@ public class UserInstallService {
 	}
 	
 	/**
-	 * Assegura que haja um usuário cadastrado.
+	 * Install one user.
 	 * 
 	 * @param entity
 	 * @param identity
