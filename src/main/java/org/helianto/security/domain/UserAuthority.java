@@ -53,7 +53,10 @@ public class UserAuthority implements Serializable {
 	private UserGroup userGroup;
 	
     @Transient
-	private Integer userGroupId;
+	private Integer userGroupId = 0;
+	
+    @Transient
+	private String userGroupName = "";
 	
     @Column(length=20)
 	private String serviceCode;
@@ -65,6 +68,9 @@ public class UserAuthority implements Serializable {
     @Enumerated(EnumType.STRING)
     private ActivityState authorityState = ActivityState.ACTIVE;
     
+    @Transient
+	private Integer selfIdentityId = 0;
+	
     /**
      * Constructor.
      */
@@ -123,6 +129,9 @@ public class UserAuthority implements Serializable {
 		this.id = id;
 	}
 
+	/**
+	 * User group where authorities are applied.
+	 */
 	public UserGroup getUserGroup() {
 		return userGroup;
 	}
@@ -142,7 +151,23 @@ public class UserAuthority implements Serializable {
 	public void setUserGroupId(Integer userGroupId) {
 		this.userGroupId = userGroupId;
 	}
+	
+	/**
+	 * <<Transient>> user group name.
+	 */
+	public String getUserGroupName() {
+		if (getUserGroup()!=null) {
+			return getUserGroup().getUserName();
+		}
+		return userGroupName;
+	}
+	public void setUserGroupName(String userGroupName) {
+		this.userGroupName = userGroupName;
+	}
 
+	/**
+	 * Service code.
+	 */
 	public String getServiceCode() {
 		return serviceCode;
 	}
@@ -162,6 +187,19 @@ public class UserAuthority implements Serializable {
 	}
 	public void setAuthorityState(ActivityState authorityState) {
 		this.authorityState = authorityState;
+	}
+	
+	/**
+	 * <<Transient>> self identity id.
+	 * 
+	 * <p>Convenient transient field to provide the logged user with privileges 
+	 * assigned to herself.</p>
+	 */
+	public Integer getSelfIdentityId() {
+		return selfIdentityId;
+	}
+	public void setSelfIdentityId(Integer selfIdentityId) {
+		this.selfIdentityId = selfIdentityId;
 	}
 	
     /**
@@ -202,6 +240,13 @@ public class UserAuthority implements Serializable {
         	roleNames.add(formatRole(serviceName, extension));
         }
         return roleNames;
+    }
+    
+    /**
+     * Convenient conversion for authorities.
+     */
+    public Set<String> getUserAuthoritiesAsString() {
+    	return getUserAuthoritiesAsString(getServiceCode(), getServiceExtension(), getSelfIdentityId());
     }
     
     /**
