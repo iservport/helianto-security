@@ -28,30 +28,35 @@ public interface UserAuthorityRepository extends JpaRepository<UserAuthority, Se
 	 */
 	UserAuthority findByUserGroupAndServiceCode(UserGroup userGroup, String serviceCode);
 	
+	public static final String QUERY = "select new "
+			+ "org.helianto.security.domain.UserAuthority"
+			+ "( userAuthority_.id "
+			+ ", userAuthority_.userGroup.id "
+			+ ", userAuthority_.serviceCode "
+			+ ", userAuthority_.serviceExtension "
+			+ ") "
+			+ "from UserAuthority userAuthority_ ";
+
 	/**
 	 * Find by natural key.
 	 * 
 	 * @param userGroupId
 	 * @param serviceCode
 	 */
-	UserAuthority findByUserGroupIdAndServiceCode(int userGroupId, String serviceCode);
+	@Query(QUERY
+			+ "where userAuthority_.userGroup.id = ?1 "
+			+ "and userAuthority_.serviceCode = ?2 ")
+	UserAuthority findByUserGroup_IdAndServiceCode(int userGroupId, String serviceCode);
 	
 	/**
 	 * List by userGroup.
 	 * 
 	 * @param parentGroups
 	 */
-	@Query("select new "
-			+ "org.helianto.security.repository.UserAuthorityReadAdapter"
-			+ "( userAuthority_.id "
-			+ ", userAuthority_.userGroup.id "
-			+ ", userAuthority_.serviceCode "
-			+ ", userAuthority_.serviceExtension "
-			+ ") "
-			+ "from UserAuthority userAuthority_ "
+	@Query(QUERY
 			+ "where userAuthority_.userGroup in ?1 "
 			+ "order by userAuthority_.serviceCode ASC ")
-	List<UserAuthorityReadAdapter> findByUserGroupIdOrderByServiceCodeAsc(Collection<UserGroup> parentGroups);
+	List<UserAuthority> findByUserGroupIdOrderByServiceCodeAsc(Collection<UserGroup> parentGroups);
 
 	/**
 	 * Page by userGroup.
@@ -60,10 +65,17 @@ public interface UserAuthorityRepository extends JpaRepository<UserAuthority, Se
 	 * @param authorityState
 	 * @param page
 	 */
-	Page<UserAuthority> findByUserGroupIdAndAuthorityState(int userGroupId, ActivityState authorityState, Pageable page);
+	@Query(QUERY
+			+ "where userAuthority_.userGroup.id = ?1 "
+			+ "and userAuthority_.authorityState = ?2 ")
+	Page<UserAuthority> findByUserGroup_IdAndAuthorityState(int userGroupId, ActivityState authorityState, Pageable page);
 	
-	@Query("select userAuthority_ "
-			+ "from UserAuthority userAuthority_ "
+	/**
+	 * List by user group id.
+	 * 
+	 * @param userGroupId
+	 */
+	@Query(QUERY
 			+ "where userAuthority_.userGroup.id = ?1 "
 			+ "order by userAuthority_.serviceCode ASC ")
 	Set<UserAuthority> findByUserGroupId(Integer userGroupId);

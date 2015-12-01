@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.helianto.security.domain.UserAuthority;
 import org.helianto.security.internal.UserDetailsAdapter;
-import org.helianto.security.repository.UserAuthorityReadAdapter;
 import org.helianto.security.repository.UserAuthorityRepository;
 import org.helianto.user.domain.UserGroup;
 import org.helianto.user.repository.UserGroupRepository;
@@ -48,8 +48,8 @@ public class AuthorizationChecker {
 	 * @param parentGroups
 	 */
 	public UserDetailsAdapter updateAuthorities(UserDetailsAdapter userDetailsAdapter, List<UserGroup> parentGroups) {
-		List<UserAuthorityReadAdapter> adapterList = userAuthorityRepository.findByUserGroupIdOrderByServiceCodeAsc(parentGroups);
-        List<String> roleNames = UserAuthorityReadAdapter.getRoleNames(adapterList, userDetailsAdapter.getIdentityId());
+		List<UserAuthority> adapterList = userAuthorityRepository.findByUserGroupIdOrderByServiceCodeAsc(parentGroups);
+        List<String> roleNames = UserAuthority.getRoleNames(adapterList, userDetailsAdapter.getIdentityId());
         
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (String roleName: roleNames) {

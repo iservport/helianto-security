@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.easymock.EasyMock;
+import org.helianto.security.domain.UserAuthority;
 import org.helianto.security.internal.UserDetailsAdapter;
-import org.helianto.security.repository.UserAuthorityReadAdapter;
 import org.helianto.security.repository.UserAuthorityRepository;
 import org.helianto.user.domain.UserGroup;
 import org.helianto.user.repository.UserGroupRepository;
@@ -47,8 +47,8 @@ public class AuthorizationCheckerTests {
 		authorityList.add(new SimpleGrantedAuthority("ROLE_SERVICE"));
 		authorityList.add(new SimpleGrantedAuthority("ROLE_SERVICE_READ"));
 		
-		List<UserAuthorityReadAdapter> adapterList = new ArrayList<>();
-		adapterList.add(new UserAuthorityReadAdapter(1, 2, "SERVICE", "READ"));
+		List<UserAuthority> adapterList = new ArrayList<>();
+		adapterList.add(new UserAuthority(1, 2, "SERVICE", "READ"));
 		
 		@SuppressWarnings("serial")
 		UserDetailsAdapter userReadAdapter = new UserDetailsAdapter() {
@@ -79,8 +79,8 @@ public class AuthorizationCheckerTests {
 		authorityList.add(new SimpleGrantedAuthority("ROLE_SERVICE_READ"));
 		authorityList.add(new SimpleGrantedAuthority("ROLE_SERVICE_WRITE"));
 		
-		List<UserAuthorityReadAdapter> adapterList = new ArrayList<>();
-		adapterList.add(new UserAuthorityReadAdapter(1, 2, "SERVICE", "READ,WRITE"));
+		List<UserAuthority> adapterList = new ArrayList<>();
+		adapterList.add(new UserAuthority(1, 2, "SERVICE", "READ,WRITE"));
 		
 		@SuppressWarnings("serial")
 		UserDetailsAdapter userReadAdapter = new UserDetailsAdapter() {
