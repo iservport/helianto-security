@@ -11,11 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 import org.helianto.core.def.ActivityState;
 import org.helianto.user.domain.UserGroup;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Domain class to represent user authority.
@@ -40,9 +43,13 @@ public class UserAuthority implements Serializable {
     @Version
     private int version;
     
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name="userGroupId", nullable=true)
 	private UserGroup userGroup;
+	
+    @Transient
+	private Integer userGroupId;
 	
     @Column(length=20)
 	private String serviceCode;
@@ -98,6 +105,19 @@ public class UserAuthority implements Serializable {
 	public void setUserGroup(UserGroup userGroup) {
 		this.userGroup = userGroup;
 	}
+	
+	/**
+	 * <<Transient>> user group id.
+	 */
+	public Integer getUserGroupId() {
+		if (getUserGroup()!=null) {
+			return getUserGroup().getId();
+		}
+		return userGroupId;
+	}
+	public void setUserGroupId(Integer userGroupId) {
+		this.userGroupId = userGroupId;
+	}
 
 	public String getServiceCode() {
 		return serviceCode;
@@ -118,6 +138,18 @@ public class UserAuthority implements Serializable {
 	}
 	public void setAuthorityState(ActivityState authorityState) {
 		this.authorityState = authorityState;
+	}
+	
+	/**
+	 * Merger.
+	 * 
+	 * @param command
+	 */
+	public UserAuthority merge(UserAuthority command) {
+		setServiceCode(command.getServiceCode());
+		setServiceExtension(command.getServiceExtension());
+		setAuthorityState(command.getAuthorityState());
+		return this;
 	}
 
 	@Override
