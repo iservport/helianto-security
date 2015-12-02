@@ -34,6 +34,7 @@ public interface UserAuthorityRepository extends JpaRepository<UserAuthority, Se
 			+ ", userAuthority_.userGroup.id "
 			+ ", userAuthority_.serviceCode "
 			+ ", userAuthority_.serviceExtension "
+			+ ", userAuthority_.userGroup.userName "
 			+ ") "
 			+ "from UserAuthority userAuthority_ ";
 

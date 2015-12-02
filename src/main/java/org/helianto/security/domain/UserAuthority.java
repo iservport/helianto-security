@@ -114,12 +114,14 @@ public class UserAuthority implements Serializable {
 			Integer id
 			, Integer userGroupId
 			, String serviceCode
-			, String serviceExtension) {
+			, String serviceExtension
+			, String userGroupName) {
 		this();
 		this.id = id;
 		this.userGroupId = userGroupId;
 		this.serviceCode = serviceCode;
 		this.serviceExtension = serviceExtension;
+		this.userGroupName = userGroupName;
 	}
 	
 	public int getId() {

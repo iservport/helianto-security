@@ -48,7 +48,7 @@ public class AuthorizationCheckerTests {
 		authorityList.add(new SimpleGrantedAuthority("ROLE_SERVICE_READ"));
 		
 		List<UserAuthority> adapterList = new ArrayList<>();
-		adapterList.add(new UserAuthority(1, 2, "SERVICE", "READ"));
+		adapterList.add(new UserAuthority(1, 2, "SERVICE", "READ", "GROUP"));
 		
 		@SuppressWarnings("serial")
 		UserDetailsAdapter userReadAdapter = new UserDetailsAdapter() {
@@ -80,7 +80,7 @@ public class AuthorizationCheckerTests {
 		authorityList.add(new SimpleGrantedAuthority("ROLE_SERVICE_WRITE"));
 		
 		List<UserAuthority> adapterList = new ArrayList<>();
-		adapterList.add(new UserAuthority(1, 2, "SERVICE", "READ,WRITE"));
+		adapterList.add(new UserAuthority(1, 2, "SERVICE", "READ,WRITE", "GROUP"));
 		
 		@SuppressWarnings("serial")
 		UserDetailsAdapter userReadAdapter = new UserDetailsAdapter() {
