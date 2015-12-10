@@ -58,7 +58,7 @@ public class IdentityInstallService {
 	 * 
 	 * @param identity
 	 */
-	protected IdentitySecret installSecurity(Identity identity) {
+	public IdentitySecret installSecurity(Identity identity) {
 		IdentitySecret identitySecret = identitySecretRepository.findByIdentityKey(identity.getPrincipal());
 		if (identitySecret==null) {
 			logger.info("Will install identity secret for {}.", identity);
