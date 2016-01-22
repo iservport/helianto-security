@@ -75,7 +75,7 @@ public class UserInstallService {
 				case "USER":
 					contextGroup.setContextGroupName("USER");
 					contextGroup.setContextGroupType(ContextGroupType.SYS);
-					contextGroup.setUserType('G');
+					contextGroup.setUserType('A');
 					break;	
 				}
 				contextGroup = contextGroupRepository.saveAndFlush(contextGroup);
